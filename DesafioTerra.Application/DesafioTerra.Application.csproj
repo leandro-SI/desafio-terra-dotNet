@@ -3,12 +3,21 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DesafioTerra.Domain\DesafioTerra.Domain.csproj" />
     <ProjectReference Include="..\DesafioTerra.Infra\DesafioTerra.Infra.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Dto\Response\" />
+    <Folder Include="Dto\Request\" />
   </ItemGroup>
 
 </Project>
