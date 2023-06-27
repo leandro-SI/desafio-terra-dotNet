@@ -16,30 +16,32 @@ namespace DesafioTerra.Application.Services
 {
     public class AntCorrupcaoService : IAntCorrupcaoService
     {
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
 
-        public AntCorrupcaoService(IConfiguration configuration)
+        public AntCorrupcaoService(IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<CriacaoRepositorioResponse> CriarRepositorio(RepositorioDTO repositorioDTO)
         {
             try
             {
-                string apiUrl = _configuration.GetSection("Bases:Repositorio_Url").Value;
-
                 var novoRepositorio = new
                 {
                     name = repositorioDTO.Nome,
                     description = repositorioDTO.Descricao,
                 };
 
-                using (HttpClient httpClient = new HttpClient())
+                using (HttpClient httpClient = _httpClientFactory.CreateClient("RepositorioAPI"))
                 {
                     httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {repositorioDTO.Token}");
                     httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                     httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
+
+                    string apiUrl = httpClient.BaseAddress.ToString();
 
                     string repositorioJson = JsonConvert.SerializeObject(novoRepositorio);
 

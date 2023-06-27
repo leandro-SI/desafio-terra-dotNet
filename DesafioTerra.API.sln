@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioTerra.Domain", "Desa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioTerra.Infra", "DesafioTerra.Infra\DesafioTerra.Infra.csproj", "{01CF72BD-CE0D-4FFE-B726-40B0D60324BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioTerra.Application.Tests", "DesafioTerra.Application.Tests\DesafioTerra.Application.Tests.csproj", "{7837870E-E40E-46E1-98AE-7B6F3BE1789C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{01CF72BD-CE0D-4FFE-B726-40B0D60324BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01CF72BD-CE0D-4FFE-B726-40B0D60324BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01CF72BD-CE0D-4FFE-B726-40B0D60324BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7837870E-E40E-46E1-98AE-7B6F3BE1789C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7837870E-E40E-46E1-98AE-7B6F3BE1789C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7837870E-E40E-46E1-98AE-7B6F3BE1789C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7837870E-E40E-46E1-98AE-7B6F3BE1789C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
