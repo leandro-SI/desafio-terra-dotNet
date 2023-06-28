@@ -65,5 +65,46 @@ namespace DesafioTerra.Application.Services
 
         }
 
+        public async Task<BranchResponse> ListarBranchs(string usuario, string repositorio, string token)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                _httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
+
+                string apiUrl = $"https://api.github.com/repos/{usuario}/{repositorio}/branches";
+
+                HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync(apiUrl);
+
+                string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                BranchResponse response = new BranchResponse();
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {                    
+                    response.Branchs = new List<BranchList>();
+                    response.Sucesso = true;
+                    response.Mensagem = "Sucesso";
+
+                    response.Branchs = JsonConvert.DeserializeObject<List<BranchList>>(responseString);
+
+                    return response;
+                }
+                else
+                {
+                    response.Branchs = null;
+                    response.Sucesso = false;
+                    response.Mensagem = "Resource not found.";
+
+                    return response;
+                }
+
+            }
+            catch (Exception _error)
+            {
+                throw new Exception(_error.Message);
+            }
+        }
     }
 }

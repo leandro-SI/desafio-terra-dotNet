@@ -14,6 +14,7 @@ namespace DesafioTerra.Application.Profiles
         public AntCorrupcaoProfile()
         {
             CreateMap<Repositorio, RepositorioDTO>().ReverseMap();
+            CreateMap<Branch, BranchDTO>().ReverseMap();
         }
     }
 }

@@ -39,6 +39,28 @@ namespace DesafioTerra.API.Controllers
             }
         }
 
+        [HttpGet("listar_branches")]
+        [ProducesResponseType(typeof(BranchResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BranchResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<BranchResponse>> ListarBranches(string usuario, string repositorio, string token)
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest("todos os campos são obrigatórios.");
+
+            try
+            {
+                var response = await _service.ListarBranchs(usuario, repositorio, token);
+
+                return Ok(response);
+
+            }
+            catch (Exception _error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao criar repositório: " + _error.Message);
+            }
+        }
+
 
     }
 }

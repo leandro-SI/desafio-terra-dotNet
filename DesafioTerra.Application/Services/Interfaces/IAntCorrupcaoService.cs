@@ -11,5 +11,6 @@ namespace DesafioTerra.Application.Services.Interfaces
     public interface IAntCorrupcaoService
     {
         Task<CriacaoRepositorioResponse> CriarRepositorio(RepositorioDTO repositorioDTO);
+        Task<BranchResponse> ListarBranchs(string usuario, string repositorio, string token);
     }
 }
