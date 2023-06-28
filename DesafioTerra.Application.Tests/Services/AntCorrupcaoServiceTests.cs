@@ -49,5 +49,31 @@ namespace DesafioTerra.Application.Tests.Services
 
         }
 
+        [Fact]
+        public async Task ListarBranches_StatusCode200_ReturnsSucessResponse()
+        {
+
+            string owner = "leandro-user";
+            string repo = "meu-repositorio";
+            string token = "meu_token";
+
+            var expectedResponse = new
+            {
+                Sucesso = true,
+                Mensagem = "Sucesso",
+                Branchs = new List<BranchList>()
+            };
+
+            var http = new HttpClient(new HttpMessageHandlerMock(HttpStatusCode.OK));
+
+            var service = new AntCorrupcaoService(http);
+            var result = await service.ListarBranchs(owner, repo, token);
+
+            // Assert
+            Assert.Equal(expectedResponse.Sucesso, result.Sucesso);
+            Assert.Equal(expectedResponse.Mensagem, result.Mensagem);
+
+        }
+
     }
 }
