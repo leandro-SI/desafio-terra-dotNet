@@ -13,5 +13,6 @@ namespace DesafioTerra.Application.Services.Interfaces
         Task<CriacaoRepositorioResponse> CriarRepositorio(RepositorioDTO repositorioDTO);
         Task<BranchResponse> ListarBranchs(string usuario, string repositorio, string token);
         Task<WebhookResponse> ListarWebhooks(string usuario, string repositorio, string token);
+        Task<AdicionarWebhookResponse> AdicionarWebhook(WebhookDTO webhookDTO);
     }
 }

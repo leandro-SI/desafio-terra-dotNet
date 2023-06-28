@@ -2,6 +2,7 @@
 using DesafioTerra.Application.Dto.Response;
 using DesafioTerra.Application.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Octokit;
 using System;
@@ -9,8 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mime;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DesafioTerra.Application.Services
 {
@@ -140,6 +144,76 @@ namespace DesafioTerra.Application.Services
                     response.Mensagem = "Resource not found.";
 
                     return response;
+                }
+
+            }
+            catch (Exception _error)
+            {
+                throw new Exception(_error.Message);
+            }
+        }
+
+        public async Task<AdicionarWebhookResponse> AdicionarWebhook(WebhookDTO webhookDTO)
+        {
+            try
+            {
+                var configuracao = new
+                {
+                    url = "https://example.com/webhook",
+                    content_type = "json",
+                    insecure_ssl = "0"
+                };
+
+                var cabecalho = new Dictionary<string, string>();
+
+                cabecalho.Add("X-GitHub-Api-Version", "2022-11-28");
+
+                var novoWebhook = new
+                {
+                    owner = webhookDTO.Usuario,
+                    repo = webhookDTO.Repositorio,
+                    name = "web",
+                    active = webhookDTO.Ativo,
+                    events = webhookDTO.Eventos,
+                    config = configuracao,
+                    headers = cabecalho
+                };
+
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {webhookDTO.Token}");
+                _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
+                _httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
+
+                string apiUrl = $"https://api.github.com/repos/{webhookDTO.Usuario}/{webhookDTO.Repositorio}/hooks";
+
+                string webhookJson = JsonConvert.SerializeObject(novoWebhook);
+
+                HttpContent requestBody = new StringContent(webhookJson, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync(apiUrl, requestBody);
+
+                _httpClient.Dispose();
+
+                AdicionarWebhookResponse webhookResponseJson = new AdicionarWebhookResponse();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseString = await response.Content.ReadAsStringAsync();
+
+                    webhookResponseJson.Sucesso = true;
+                    webhookResponseJson.Mensagem = "Sucesso";
+
+                    webhookResponseJson.Webhook = JsonConvert.DeserializeObject<WebhooksList>(responseString);
+
+                    return webhookResponseJson;
+
+                }
+                else
+                {
+                    webhookResponseJson.Sucesso = false;
+                    webhookResponseJson.Mensagem = "Erro ao adicionar Webhook: Erro - " + response.StatusCode;
+                    webhookResponseJson.Webhook = null;
+
+                    return webhookResponseJson;
                 }
 
             }
