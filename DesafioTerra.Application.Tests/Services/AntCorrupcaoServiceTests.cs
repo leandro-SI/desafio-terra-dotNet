@@ -6,6 +6,7 @@ using DesafioTerra.Application.Services.Interfaces;
 using DesafioTerra.Domain.Models;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using Newtonsoft.Json.Linq;
 using Octokit;
 using System;
 using System.Collections.Generic;
@@ -98,6 +99,39 @@ namespace DesafioTerra.Application.Tests.Services
             // Assert
             Assert.Equal(expectedResponse.Sucesso, result.Sucesso);
             Assert.Equal(expectedResponse.Mensagem, result.Mensagem);
+
+        }
+
+        [Fact]
+        public async Task CriarWebhook_StatusCode200_ReturnsSucessResponse()
+        {
+            string token = "meu token";
+
+            WebhookDTO webhookDTO = new WebhookDTO()
+            {
+                Usuario = "meu proprietario",
+                Repositorio = "meu repositorio",
+                Ativo = true,
+                Token = token,
+                Eventos = new string[] { "push", "pull_request" }
+            };
+
+            var expectedResponse = new CriacaoRepositorioResponse
+            {
+                Sucesso = true,
+                Mensagem = "Sucesso"
+            };
+
+            var http = new HttpClient(new HttpMessageHandlerMock(HttpStatusCode.OK));
+
+            var service = new AntCorrupcaoService(http);
+            var result = await service.AdicionarWebhook(webhookDTO);
+
+            // Assert
+            Assert.Equal(expectedResponse.Sucesso, result.Sucesso);
+            Assert.Equal(expectedResponse.Mensagem, result.Mensagem);
+
+            //Assert.True(result.Sucesso);
 
         }
 
