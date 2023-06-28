@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using DesafioTerra.Application.Dto;
+using DesafioTerra.Application.Dto.Request;
 using DesafioTerra.Application.Dto.Response;
 using DesafioTerra.Application.Services;
 using DesafioTerra.Application.Services.Interfaces;
@@ -126,6 +127,40 @@ namespace DesafioTerra.Application.Tests.Services
 
             var service = new AntCorrupcaoService(http);
             var result = await service.AdicionarWebhook(webhookDTO);
+
+            // Assert
+            Assert.Equal(expectedResponse.Sucesso, result.Sucesso);
+            Assert.Equal(expectedResponse.Mensagem, result.Mensagem);
+
+            //Assert.True(result.Sucesso);
+
+        }
+
+        [Fact]
+        public async Task AtualizarWebhook_StatusCode200_ReturnsSucessResponse()
+        {
+            string token = "meu token";
+
+            AtualizarWebhookRequest webhookDTO = new AtualizarWebhookRequest()
+            {
+                Usuario = "meu proprietario",
+                Repositorio = "meu repositorio",
+                Ativo = true,
+                HookId = 767467,
+                Token = token,
+                Eventos = new string[] { "push", "pull_request" }
+            };
+
+            var expectedResponse = new AtualizarWebhookResponse
+            {
+                Sucesso = true,
+                Mensagem = "Sucesso"
+            };
+
+            var http = new HttpClient(new HttpMessageHandlerMock(HttpStatusCode.OK));
+
+            var service = new AntCorrupcaoService(http);
+            var result = await service.AtualizarWebhook(webhookDTO);
 
             // Assert
             Assert.Equal(expectedResponse.Sucesso, result.Sucesso);
