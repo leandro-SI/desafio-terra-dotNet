@@ -1,4 +1,5 @@
 ﻿using DesafioTerra.Application.Dto;
+using DesafioTerra.Application.Dto.Request;
 using DesafioTerra.Application.Dto.Response;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,6 @@ namespace DesafioTerra.Application.Services.Interfaces
         Task<BranchResponse> ListarBranchs(string usuario, string repositorio, string token);
         Task<WebhookResponse> ListarWebhooks(string usuario, string repositorio, string token);
         Task<AdicionarWebhookResponse> AdicionarWebhook(WebhookDTO webhookDTO);
+        Task<AtualizarWebhookResponse> AtualizarWebhook(AtualizarWebhookRequest webhookRequest);
     }
 }

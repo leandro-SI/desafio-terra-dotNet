@@ -5,13 +5,18 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesafioTerra.API", "DesafioTerra.API\DesafioTerra.API.csproj", "{1B4CEBB5-3A67-40F2-B7AD-4943C4846741}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioTerra.Application", "DesafioTerra.Application\DesafioTerra.Application.csproj", "{5C782B17-8C90-43E8-AE6E-461FEAB2682F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesafioTerra.Application", "DesafioTerra.Application\DesafioTerra.Application.csproj", "{5C782B17-8C90-43E8-AE6E-461FEAB2682F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioTerra.Domain", "DesafioTerra.Domain\DesafioTerra.Domain.csproj", "{CADF40F1-0F4F-4C56-AFFE-116A58823098}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesafioTerra.Domain", "DesafioTerra.Domain\DesafioTerra.Domain.csproj", "{CADF40F1-0F4F-4C56-AFFE-116A58823098}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioTerra.Infra", "DesafioTerra.Infra\DesafioTerra.Infra.csproj", "{01CF72BD-CE0D-4FFE-B726-40B0D60324BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesafioTerra.Infra", "DesafioTerra.Infra\DesafioTerra.Infra.csproj", "{01CF72BD-CE0D-4FFE-B726-40B0D60324BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioTerra.Application.Tests", "DesafioTerra.Application.Tests\DesafioTerra.Application.Tests.csproj", "{7837870E-E40E-46E1-98AE-7B6F3BE1789C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesafioTerra.Application.Tests", "DesafioTerra.Application.Tests\DesafioTerra.Application.Tests.csproj", "{7837870E-E40E-46E1-98AE-7B6F3BE1789C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{01F104EB-5BA5-48C8-84E0-55560FA97422}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

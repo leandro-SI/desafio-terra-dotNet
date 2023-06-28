@@ -1,4 +1,5 @@
 ﻿using DesafioTerra.Application.Dto;
+using DesafioTerra.Application.Dto.Request;
 using DesafioTerra.Application.Dto.Response;
 using DesafioTerra.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -7,17 +8,27 @@ using System;
 
 namespace DesafioTerra.API.Controllers
 {
+
+    /// <summary>
+    /// API de Integração com API REST do GitHub.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AntCorrupcaoController : ControllerBase
     {
         private readonly IAntCorrupcaoService _service;
 
+        /// <summary>
+        /// Construtor para injetar as dependências de serviço.
+        /// </summary>
         public AntCorrupcaoController(IAntCorrupcaoService service)
         {
             _service = service;
         }
 
+        /// <summary>
+        /// Endpoint para criar um novo repositório.
+        /// </summary>
         [HttpPost("criar_repositorio")]
         [ProducesResponseType(typeof(CriacaoRepositorioResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CriacaoRepositorioResponse), StatusCodes.Status500InternalServerError)]
@@ -40,6 +51,9 @@ namespace DesafioTerra.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Endpoint para listar as Branchs de um repositório.
+        /// </summary>
         [HttpGet("listar_branches")]
         [ProducesResponseType(typeof(BranchResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BranchResponse), StatusCodes.Status500InternalServerError)]
@@ -62,6 +76,9 @@ namespace DesafioTerra.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Endpoint para listar os Webhooks de um repositório.
+        /// </summary>
         [HttpGet("listar_webhooks")]
         [ProducesResponseType(typeof(WebhookResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -119,6 +136,42 @@ namespace DesafioTerra.API.Controllers
             catch (Exception _error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse("Erro ao adicionar webhook.", _error));
+
+            }
+        }
+
+        /// <summary>
+        /// Tipos de Eventos aceitos (exemplos) - 'push' e/ou 'pull_request'
+        /// </summary>
+        /// <param name="webhookRequest"></param>
+        /// <returns></returns>
+        [HttpPatch("atualizar_webhook")]
+        [ProducesResponseType(typeof(AtualizarWebhookResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<AtualizarWebhookResponse>> AtualizarWebhook([FromBody] AtualizarWebhookRequest webhookRequest)
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest("todos os campos são obrigatórios.");
+
+            string[] events_acepts = { "push", "pull_request" };
+
+            var valuesNotInArray = webhookRequest.Eventos.Except(events_acepts);
+
+            if (valuesNotInArray.Any())
+                return BadRequest("Evento webhook não aceito!");
+
+            try
+            {
+                var response = await _service.AtualizarWebhook(webhookRequest);
+
+                return Ok(response);
+
+            }
+            catch (Exception _error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse("Erro ao atualizar webhook.", _error));
 
             }
         }

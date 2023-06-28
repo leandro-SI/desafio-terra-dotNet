@@ -1,4 +1,5 @@
 ﻿using DesafioTerra.Application.Dto;
+using DesafioTerra.Application.Dto.Request;
 using DesafioTerra.Application.Dto.Response;
 using DesafioTerra.Application.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -211,6 +212,64 @@ namespace DesafioTerra.Application.Services
                 {
                     webhookResponseJson.Sucesso = false;
                     webhookResponseJson.Mensagem = "Erro ao adicionar Webhook: Erro - " + response.StatusCode;
+                    webhookResponseJson.Webhook = null;
+
+                    return webhookResponseJson;
+                }
+
+            }
+            catch (Exception _error)
+            {
+                throw new Exception(_error.Message);
+            }
+        }
+
+        public async Task<AtualizarWebhookResponse> AtualizarWebhook(AtualizarWebhookRequest webhookRequest)
+        {
+            try
+            {
+
+                var updateWebhook = new
+                {
+                    owner = webhookRequest.Usuario,
+                    repo = webhookRequest.Repositorio,
+                    hook_id = webhookRequest.HookId,
+                    active = webhookRequest.Ativo,
+                    add_events = webhookRequest.Eventos
+                };
+
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {webhookRequest.Token}");
+                _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
+                _httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
+
+                string apiUrl = $"https://api.github.com/repos/{webhookRequest.Usuario}/{webhookRequest.Repositorio}/hooks/{webhookRequest.HookId}";
+
+                string webhookJson = JsonConvert.SerializeObject(updateWebhook);
+
+                HttpContent requestBody = new StringContent(webhookJson, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PatchAsync(apiUrl, requestBody);
+
+                _httpClient.Dispose();
+
+                AtualizarWebhookResponse webhookResponseJson = new AtualizarWebhookResponse();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseString = await response.Content.ReadAsStringAsync();
+
+                    webhookResponseJson.Sucesso = true;
+                    webhookResponseJson.Mensagem = "Sucesso";
+
+                    webhookResponseJson.Webhook = JsonConvert.DeserializeObject<AtualizarWebhookList>(responseString);
+
+                    return webhookResponseJson;
+
+                }
+                else
+                {
+                    webhookResponseJson.Sucesso = false;
+                    webhookResponseJson.Mensagem = "Erro ao atualizar Webhook: Erro - " + response.StatusCode;
                     webhookResponseJson.Webhook = null;
 
                     return webhookResponseJson;
