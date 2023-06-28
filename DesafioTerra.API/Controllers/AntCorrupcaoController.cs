@@ -31,12 +31,13 @@ namespace DesafioTerra.API.Controllers
         /// </summary>
         [HttpPost("criar_repositorio")]
         [ProducesResponseType(typeof(CriacaoRepositorioResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(CriacaoRepositorioResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CriacaoRepositorioResponse>> CriarRepositorio([FromBody] RepositorioDTO repositorioDTO)
         {
 
             if (!ModelState.IsValid)
-                return BadRequest("todos os campos são obrigatórios.");
+                return BadRequest(new ErrorResponse("todos os campos são obrigatórios.."));
 
             try
             {
@@ -47,7 +48,7 @@ namespace DesafioTerra.API.Controllers
             }
             catch (Exception _error)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao criar repositório: " + _error.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse("Erro ao criar repositório.", _error));
             }
         }
 
@@ -56,12 +57,13 @@ namespace DesafioTerra.API.Controllers
         /// </summary>
         [HttpGet("listar_branches")]
         [ProducesResponseType(typeof(BranchResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(BranchResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<BranchResponse>> ListarBranches(string usuario, string repositorio, string token)
         {
 
             if (!ModelState.IsValid)
-                return BadRequest("todos os campos são obrigatórios.");
+                return BadRequest(new ErrorResponse("todos os campos são obrigatórios.."));
 
             try
             {
@@ -72,7 +74,7 @@ namespace DesafioTerra.API.Controllers
             }
             catch (Exception _error)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao listar branches do repositório - Erro: " + _error.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse("Erro ao listar branches do repositório.", _error));
             }
         }
 
