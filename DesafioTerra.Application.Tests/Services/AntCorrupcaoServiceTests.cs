@@ -1,10 +1,12 @@
 ﻿using AutoFixture;
 using DesafioTerra.Application.Dto;
+using DesafioTerra.Application.Dto.Response;
 using DesafioTerra.Application.Services;
 using DesafioTerra.Application.Services.Interfaces;
 using DesafioTerra.Domain.Models;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,34 @@ namespace DesafioTerra.Application.Tests.Services
     public class AntCorrupcaoServiceTests
     {
 
+        [Fact]
+        public async Task CriarRepositorio_StatusCode200_ReturnsSucessResponse()
+        {
+            var novoRepositorio = new RepositorioDTO()
+            {
+                Nome = "repositorio",
+                Descricao = "descricao",
+                Token = "meu token"
+            };
+
+            var expectedResponse = new CriacaoRepositorioResponse
+            {
+                Sucesso = true,
+                Mensagem = "Repositório criado com sucesso!"
+            };
+
+            var http = new HttpClient(new HttpMessageHandlerMock(HttpStatusCode.OK));
+
+            var service = new AntCorrupcaoService(http);
+            var result = await service.CriarRepositorio(novoRepositorio);
+
+            // Assert
+            Assert.Equal(expectedResponse.Sucesso, result.Sucesso);
+            Assert.Equal(expectedResponse.Mensagem, result.Mensagem);
+
+            //Assert.True(result.Sucesso);
+
+        }
 
     }
 }

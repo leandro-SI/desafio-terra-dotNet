@@ -16,13 +16,11 @@ namespace DesafioTerra.Application.Services
 {
     public class AntCorrupcaoService : IAntCorrupcaoService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
 
-        public AntCorrupcaoService(IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        public AntCorrupcaoService(HttpClient httpClient)
         {
-            _configuration = configuration;
-            _httpClientFactory = httpClientFactory;
+            _httpClient = httpClient;
         }
 
         public async Task<CriacaoRepositorioResponse> CriarRepositorio(RepositorioDTO repositorioDTO)
@@ -35,29 +33,29 @@ namespace DesafioTerra.Application.Services
                     description = repositorioDTO.Descricao,
                 };
 
-                using (HttpClient httpClient = _httpClientFactory.CreateClient("RepositorioAPI"))
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {repositorioDTO.Token}");
+                _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                _httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
+
+                string apiUrl = "https://api.github.com/user/repos";
+
+                string repositorioJson = JsonConvert.SerializeObject(novoRepositorio);
+
+                HttpContent requestBody = new StringContent(repositorioJson, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync(apiUrl, requestBody);
+
+                _httpClient.Dispose();
+
+                if (response.IsSuccessStatusCode)
                 {
-                    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {repositorioDTO.Token}");
-                    httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
-
-                    string apiUrl = httpClient.BaseAddress.ToString();
-
-                    string repositorioJson = JsonConvert.SerializeObject(novoRepositorio);
-
-                    HttpContent requestBody = new StringContent(repositorioJson, Encoding.UTF8, "application/json");
-
-                    var response = await httpClient.PostAsync(apiUrl, requestBody);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return new CriacaoRepositorioResponse { Sucesso = true, Mensagem = "Repositório criado com sucesso!" };
-                    }
-                    else
-                    {
-                        return new CriacaoRepositorioResponse { Sucesso = false, Mensagem = "Falha ao criar o repositório. Status de resposta: " + response.StatusCode };
-                    }
+                    return new CriacaoRepositorioResponse { Sucesso = true, Mensagem = "Repositório criado com sucesso!" };
                 }
+                else
+                {
+                    return new CriacaoRepositorioResponse { Sucesso = false, Mensagem = "Falha ao criar o repositório. Status de resposta: " + response.StatusCode };
+                }
+                
 
             }
             catch (Exception _error)
