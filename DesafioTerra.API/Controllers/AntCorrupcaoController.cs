@@ -57,7 +57,32 @@ namespace DesafioTerra.API.Controllers
             }
             catch (Exception _error)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao criar repositório: " + _error.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao listar branches do repositório - Erro: " + _error.Message);
+            }
+        }
+
+        [HttpGet("listar_webhooks")]
+        [ProducesResponseType(typeof(WebhookResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(WebhookResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<WebhookResponse>> ListarWebhooks(string usuario, string repositorio, string token)
+        {
+
+            if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(repositorio) || string.IsNullOrEmpty(token))
+            {
+                return BadRequest(new ErrorResponse("Todos os campos são obrigatórios."));
+            }
+
+            try
+            {
+                var response = await _service.ListarWebhooks(usuario, repositorio, token);
+
+                return Ok(response);
+
+            }
+            catch (Exception _error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse("Erro ao listar Webhooks do repositório.", _error));
             }
         }
 

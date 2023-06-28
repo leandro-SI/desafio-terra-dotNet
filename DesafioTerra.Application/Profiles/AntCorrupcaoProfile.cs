@@ -15,6 +15,7 @@ namespace DesafioTerra.Application.Profiles
         {
             CreateMap<Repositorio, RepositorioDTO>().ReverseMap();
             CreateMap<Branch, BranchDTO>().ReverseMap();
+            CreateMap<Webhook, WebhookDTO>().ReverseMap();
         }
     }
 }

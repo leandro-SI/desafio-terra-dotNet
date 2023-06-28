@@ -106,5 +106,47 @@ namespace DesafioTerra.Application.Services
                 throw new Exception(_error.Message);
             }
         }
+
+        public async Task<WebhookResponse> ListarWebhooks(string usuario, string repositorio, string token)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                _httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
+
+                string apiUrl = $"https://api.github.com/repos/{usuario}/{repositorio}/hooks";
+
+                HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync(apiUrl);
+
+                string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                WebhookResponse response = new WebhookResponse();
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    response.Webhooks = new List<WebhooksList>();
+                    response.Sucesso = true;
+                    response.Mensagem = "Sucesso";
+
+                    response.Webhooks = JsonConvert.DeserializeObject<List<WebhooksList>>(responseString);
+
+                    return response;
+                }
+                else
+                {
+                    response.Webhooks = null;
+                    response.Sucesso = false;
+                    response.Mensagem = "Resource not found.";
+
+                    return response;
+                }
+
+            }
+            catch (Exception _error)
+            {
+                throw new Exception(_error.Message);
+            }
+        }
     }
 }
