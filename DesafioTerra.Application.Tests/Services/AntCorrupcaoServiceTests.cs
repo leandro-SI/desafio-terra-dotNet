@@ -75,5 +75,31 @@ namespace DesafioTerra.Application.Tests.Services
 
         }
 
+        [Fact]
+        public async Task ListarWebhooks_StatusCode200_ReturnsSucessResponse()
+        {
+
+            string owner = "leandro-user";
+            string repo = "meu-repositorio";
+            string token = "meu_token";
+
+            var expectedResponse = new
+            {
+                Sucesso = true,
+                Mensagem = "Sucesso",
+                Webhooks = new List<WebhooksList>()
+            };
+
+            var http = new HttpClient(new HttpMessageHandlerMock(HttpStatusCode.OK));
+
+            var service = new AntCorrupcaoService(http);
+            var result = await service.ListarWebhooks(owner, repo, token);
+
+            // Assert
+            Assert.Equal(expectedResponse.Sucesso, result.Sucesso);
+            Assert.Equal(expectedResponse.Mensagem, result.Mensagem);
+
+        }
+
     }
 }
